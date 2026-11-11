@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Detector & Fixer Pro | By Ryo XD</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            bg: '#0a0d14',
+                            card: '#121824',
+                            border: '#1e293b',
+                            accent: '#6366f1',
+                            neon: '#06b6d4',
+                            danger: '#ef4444',
+                            warning: '#f59e0b',
+                            success: '#10b981'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- PDF.js & Mammoth.js for File Parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #06090e;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 85% 85%, rgba(6, 182, 212, 0.08) 0%, transparent 40%);
+        }
+        .glass-panel {
+            background: rgba(18, 24, 36, 0.75);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-panel:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+        .glow-effect {
+            box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.25);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.3);
+            border-radius: 9999px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(99, 102, 241, 0.6);
+        }
+    </style>
+</head>
+<body class="text-slate-200 min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-50 glass-panel border-b border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-cyan-500 to-emerald-400 p-[1px] flex items-center justify-center glow-effect">
+                    <div class="w-full h-full bg-slate-950 rounded-[11px] flex items-center justify-center">
+                        <i class="fa-solid fa-[#06b6d4] fa-brain text-indigo-400 text-lg"></i>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="font-extrabold text-xl tracking-tight bg-gradient-to-r from-white via-slate-200 to-indigo-300 bg-clip-text text-transparent">
+                            AI Detector & Fixer
+                        </h1>
+                        <span class="text-[10px] uppercase font-bold tracking-widest px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">Academic Pro High-Sensitivity</span>
+                    </div>
+                    <p class="text-xs text-slate-400">Pendeteksi AI & Humanizer Tugas Kuliah</p>
+                </div>
+            </div>
+
+            <!-- Author Badge -->
+            <div class="flex items-center gap-3">
+                <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/80 border border-slate-700/60 text-xs">
+                    <span class="relative flex h-2 w-2">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                    <span class="text-slate-400">System Ready</span>
+                </div>
+                <div class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-indigo-950/80 to-slate-900 border border-indigo-500/30 text-xs font-semibold text-indigo-300 flex items-center gap-2">
+                    <i class="fa-solid fa-[#6366f1] fa-code"></i>
+                    <span>Author: <strong class="text-white font-bold">Ryo XD</strong></span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+        
+        <!-- Input & Controls Container -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Left Side: Input & Upload -->
+            <div class="lg:col-span-7 flex flex-col gap-5">
+                <div class="glass-panel rounded-2xl p-6 shadow-2xl relative overflow-hidden">
+                    <div class="flex items-center justify-between mb-4">
+                        <label class="text-sm font-semibold text-slate-300 flex items-center gap-2">
+                            <i class="fa-solid fa-[#06b6d4] fa-pen-nib text-cyan-400"></i>
+                            Teks Masukan / Upload Dokumen
+                        </label>
+                        <div class="flex items-center gap-3 text-xs text-slate-400">
+                            <span id="char-count">0 karakter</span>
+                            <span>•</span>
+                            <span id="word-count">0 kata</span>
+                        </div>
+                    </div>
+
+                    <!-- Drag and Drop Zone -->
+                    <div id="drop-zone" class="border-2 border-dashed border-slate-700 hover:border-indigo-500/60 transition-all rounded-xl p-4 mb-4 text-center bg-slate-950/40 cursor-pointer relative group">
+                        <input type="file" id="file-input" accept=".txt,.pdf,.docx" class="hidden">
+                        <div class="flex flex-col items-center justify-center gap-2 py-2">
+                            <div class="w-10 h-10 rounded-full bg-indigo-500/10 flex items-center justify-center text-indigo-400 group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-cloud-arrow-up text-lg"></i>
+                            </div>
+                            <p class="text-xs text-slate-300">
+                                <span class="font-bold text-indigo-400">Klik untuk upload</span> atau seret file ke sini
+                            </p>
+                            <p class="text-[11px] text-slate-500">Mendukung format: .txt, .docx, .pdf</p>
+                        </div>
+                    </div>
+
+                    <!-- Text Area -->
+                    <textarea 
+                        id="input-text" 
+                        rows="10" 
+                        class="w-full bg-slate-950/70 border border-slate-800 rounded-xl p-4 text-slate-200 text-sm focus:outline-none focus:border-indigo-500/80 focus:ring-1 focus:ring-indigo-500/80 transition-all custom-scrollbar placeholder:text-slate-600 resize-y"
+                        placeholder="Tempelkan draf tugas kuliah, makalah, atau artikel Anda di sini untuk dianalisis..."
+                    ></textarea>
+
+                    <!-- Action Buttons -->
+                    <div class="flex flex-wrap items-center justify-between gap-3 mt-4">
+                        <button id="btn-clear" class="px-4 py-2 rounded-xl border border-slate-800 text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 text-xs font-semibold transition-all">
+                            <i class="fa-solid fa-trash-can mr-1.5"></i> Bersihkan
+                        </button>
+                        
+                        <div class="flex items-center gap-2 ml-auto">
+                            <button id="btn-analyze" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white font-semibold text-xs shadow-lg shadow-indigo-500/20 active:scale-95 transition-all flex items-center gap-2">
+                                <i class="fa-solid fa-magnifying-glass-chart"></i> Analisis Teks
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Text Fixer / Humanizer Box -->
+                <div class="glass-panel rounded-2xl p-6 shadow-2xl">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-sm font-semibold text-slate-300 flex items-center gap-2">
+                            <i class="fa-solid fa-[#10b981] fa-wand-magic-sparkles text-emerald-400"></i>
+                            AI Humanizer & Rewriter
+                        </h3>
+                        <select id="fix-style" class="bg-slate-900 border border-slate-700 text-slate-300 text-xs rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-indigo-500">
+                            <option value="academic">Gaya Akademis Refined</option>
+                            <option value="formal">Gaya Formal Standar</option>
+                            <option value="casual">Gaya Santai & Natural</option>
+                        </select>
+                    </div>
+
+                    <div id="output-text-container" class="relative">
+                        <div id="fixed-text" class="w-full min-h-[160px] bg-slate-950/70 border border-slate-800 rounded-xl p-4 text-slate-300 text-sm custom-scrollbar whitespace-pre-wrap">
+                            <span class="text-slate-600 italic">Hasil penulisan ulang yang lebih alami akan muncul di sini setelah Anda mengklik tombol Humanize.</span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-end gap-2 mt-4">
+                        <button id="btn-copy" class="px-4 py-2 rounded-xl border border-slate-800 text-slate-300 hover:bg-slate-800 text-xs font-semibold transition-all">
+                            <i class="fa-solid fa-copy mr-1.5"></i> Salin
+                        </button>
+                        <button id="btn-download" class="px-4 py-2 rounded-xl border border-slate-800 text-slate-300 hover:bg-slate-800 text-xs font-semibold transition-all">
+                            <i class="fa-solid fa-download mr-1.5"></i> Download TXT
+                        </button>
+                        <button id="btn-fix" class="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs shadow-lg shadow-emerald-500/20 active:scale-95 transition-all">
+                            <i class="fa-solid fa-rotate mr-1.5"></i> Humanize Teks
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side: Analysis Results -->
+            <div class="lg:col-span-5 flex flex-col gap-5">
+                
+                <!-- Main Score Card -->
+                <div class="glass-panel rounded-2xl p-6 shadow-2xl relative overflow-hidden">
+                    <h3 class="text-sm font-semibold text-slate-300 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-pie text-indigo-400"></i> Hasil Analisis Backend
+                    </h3>
+
+                    <!-- Dual Score Display (AI % vs Human %) -->
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800 text-center relative overflow-hidden">
+                            <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Skor AI</div>
+                            <div id="ai-percentage" class="text-3xl font-extrabold text-indigo-400">0%</div>
+                            <div class="text-[10px] text-slate-500 mt-1">Estimasi classifier terlatih</div>
+                        </div>
+                        <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800 text-center relative overflow-hidden">
+                            <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Tulisan Manual</div>
+                            <div id="human-percentage" class="text-3xl font-extrabold text-emerald-400">0%</div>
+                            <div class="text-[10px] text-slate-500 mt-1">Estimasi classifier terlatih</div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col items-center justify-center py-2">
+                        <!-- Circular Score Meter -->
+                        <div class="relative w-36 h-36 flex items-center justify-center">
+                            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                                <path class="text-slate-800" stroke-width="3" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                                <path id="score-circle" class="text-indigo-500 transition-all duration-1000 ease-out" stroke-dasharray="0, 100" stroke-width="3.5" stroke-linecap="round" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                            </svg>
+                            <div class="absolute flex flex-col items-center justify-center text-center">
+                                <span id="score-percentage" class="text-3xl font-extrabold text-white tracking-tight">0%</span>
+                                <span id="score-label" class="text-[10px] uppercase font-bold tracking-wider text-slate-400 mt-0.5">Belum Scanned</span>
+                            </div>
+                        </div>
+
+                        <!-- Status Badge -->
+                        <div id="status-badge" class="mt-4 px-4 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-slate-400 text-xs font-semibold text-center">
+                            Masukkan teks &amp; klik Analisis
+                        </div>
+                    </div>
+
+                    <!-- Additional Metrics Breakdown -->
+                    <div class="grid grid-cols-2 gap-3 mt-4 pt-4 border-t border-slate-800/80">
+                        <div class="bg-slate-950/50 p-3 rounded-xl border border-slate-800">
+                            <div class="text-[11px] text-slate-400 font-medium">Variasi Ritme (Burstiness)</div>
+                            <div id="burstiness-score" class="text-sm font-bold text-slate-200 mt-0.5">-</div>
+                        </div>
+                        <div class="bg-slate-950/50 p-3 rounded-xl border border-slate-800">
+                            <div class="text-[11px] text-slate-400 font-medium">Densitas Frasa Klise AI</div>
+                            <div id="ai-density-score" class="text-sm font-bold text-slate-200 mt-0.5">-</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CRITICAL FIX RECOMMENDATION PANEL (Dynamic based on AI level) -->
+                <div id="fix-recommendation-panel" class="hidden glass-panel rounded-2xl p-6 border-l-4 border-l-rose-500 bg-rose-950/10 shadow-2xl">
+                    <div class="flex items-center gap-2 text-rose-400 font-bold text-sm mb-2">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <span id="recommendation-title">Panduan Perbaikan Agar Tidak Terdeteksi AI</span>
+                    </div>
+                    <p id="recommendation-desc" class="text-xs text-slate-300 leading-relaxed mb-4">
+                        Berikut daftar kata/frasa khas AI dan pola struktur kaku yang <strong>wajib diubah</strong> agar teks tulisan Anda lolos pengecekan AI kampus:
+                    </p>
+                    
+                    <div class="space-y-3 mb-4 text-xs">
+                        <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+                            <div class="font-semibold text-rose-400 mb-1"><i class="fa-solid fa-[#ef4444] fa-circle-dot text-[8px] mr-1.5"></i> Frasa Klise AI Terdeteksi:</div>
+                            <ul id="detected-phrases-list" class="list-disc list-inside text-slate-300 space-y-1">
+                                <!-- Dynamic List -->
+                            </ul>
+                        </div>
+                        <div class="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+                            <div class="font-semibold text-amber-400 mb-1"><i class="fa-solid fa-[#f59e0b] fa-wrench text-[10px] mr-1.5"></i> Langkah Konkret Penyelamatan:</div>
+                            <ul class="list-disc list-inside text-slate-300 space-y-1">
+                                <li>Ganti kata transisi kaku (misal: <em>"Dalam konteks ini"</em>) dengan ungkapan alami.</li>
+                                <li>Acak panjang kalimat (kombinasikan kalimat pendek dan panjang).</li>
+                                <li>Sisipkan opini pribadi, pengalaman, atau kutipan jurnal spesifik.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <button id="btn-auto-fix-target" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-rose-600 to-indigo-600 hover:from-rose-500 hover:to-indigo-500 text-white font-bold text-xs shadow-lg shadow-rose-900/30 transition-all flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> Otomatis Perbaiki Poin-Poin Ini
+                    </button>
+                </div>
+
+                <!-- Sentence Highlight Analysis -->
+                <div class="glass-panel rounded-2xl p-6 shadow-2xl flex-1 flex flex-col">
+                    <h3 class="text-sm font-semibold text-slate-300 mb-3 flex items-center justify-between">
+                        <span class="flex items-center gap-2"><i class="fa-solid fa-highlighter text-cyan-400"></i> Peta Kalimat</span>
+                        <div class="flex items-center gap-2 text-[10px]">
+                            <span class="flex items-center gap-1 text-rose-400"><span class="w-2 h-2 rounded-full bg-rose-500"></span> AI (&ge;50%)</span>
+                            <span class="flex items-center gap-1 text-amber-400"><span class="w-2 h-2 rounded-full bg-amber-500"></span> Mixed</span>
+                            <span class="flex items-center gap-1 text-emerald-400"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Manual</span>
+                        </div>
+                    </h3>
+
+                    <div id="highlighted-text" class="flex-1 min-h-[160px] max-h-[300px] bg-slate-950/70 border border-slate-800 rounded-xl p-4 text-xs text-slate-300 overflow-y-auto custom-scrollbar leading-relaxed">
+                        <span class="text-slate-600 italic">Pratinjau peta analisa kalimat akan ditampilkan di sini.</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="glass-panel border-t border-slate-800/80 mt-12 py-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p class="text-xs text-slate-500">
+                &copy; 2026 AI Detector &amp; Humanizer Academic Edition. All rights reserved.
+            </p>
+            <div class="text-xs text-slate-400 flex items-center gap-2">
+                <span>Created with <i class="fa-solid fa-[#ef4444] fa-heart text-rose-500"></i> by</span>
+                <span class="font-extrabold bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">Ryo XD</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Set PDF.js worker
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        // High-Sensitivity Academic AI Buzzwords & Transition Dictionary
+        const aiPhrases = [
+            "dalam konteks ini", "secara keseluruhan", "penting untuk dicatat", "merupakan aspek kunci",
+            "dapat disimpulkan bahwa", "di sisi lain", "memainkan peran penting", "tidak dapat dipungkiri",
+            "perlu diingat bahwa", "dalam era modern ini", "seiring berjalannya waktu", "sebagai kesimpulan",
+            "menjelajahi", "memberikan wawasan", "mengintegrasikan", "berbagai macam", "pada dasarnya",
+            "hal ini menunjukkan", "oleh karena itu", "sejalan dengan hal tersebut", "tidak bisa dipungkiri",
+            "mengingat bahwa", "pada gilirannya", "memberikan kontribusi", "melalui pendekatan ini",
+            "in conclusion", "it is important to note", "plays a crucial role", "furthermore", "moreover",
+            "in this context", "overall", "delve into", "testament to", "it is worth noting"
+        ];
+
+        // Elements
+        const inputText = document.getElementById('input-text');
+        const fileInput = document.getElementById('file-input');
+        const dropZone = document.getElementById('drop-zone');
+        const charCount = document.getElementById('char-count');
+        const wordCount = document.getElementById('word-count');
+        const btnAnalyze = document.getElementById('btn-analyze');
+        const btnClear = document.getElementById('btn-clear');
+        const btnFix = document.getElementById('btn-fix');
+        const btnAutoFixTarget = document.getElementById('btn-auto-fix-target');
+        const btnCopy = document.getElementById('btn-copy');
+        const btnDownload = document.getElementById('btn-download');
+        const fixedText = document.getElementById('fixed-text');
+        const highlightedText = document.getElementById('highlighted-text');
+        const scoreCircle = document.getElementById('score-circle');
+        const scorePercentage = document.getElementById('score-percentage');
+        const aiPercentage = document.getElementById('ai-percentage');
+        const humanPercentage = document.getElementById('human-percentage');
+        const scoreLabel = document.getElementById('score-label');
+        const statusBadge = document.getElementById('status-badge');
+        const burstinessScore = document.getElementById('burstiness-score');
+        const aiDensityScore = document.getElementById('ai-density-score');
+        const fixPanel = document.getElementById('fix-recommendation-panel');
+        const recommendationTitle = document.getElementById('recommendation-title');
+        const recommendationDesc = document.getElementById('recommendation-desc');
+        const detectedPhrasesList = document.getElementById('detected-phrases-list');
+
+        let currentDetectedPhrases = [];
+
+        // Counter listener
+        inputText.addEventListener('input', updateCounts);
+
+        function updateCounts() {
+            const text = inputText.value;
+            charCount.textContent = `${text.length} karakter`;
+            const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+            wordCount.textContent = `${words} kata`;
+        }
+
+        // File Upload Handlers
+        dropZone.addEventListener('click', () => fileInput.click());
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('border-indigo-500');
+        });
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('border-indigo-500');
+        });
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('border-indigo-500');
+            if (e.dataTransfer.files.length) {
+                handleFile(e.dataTransfer.files[0]);
+            }
+        });
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        function handleFile(file) {
+            const ext = file.name.split('.').pop().toLowerCase();
+            if (ext === 'txt') {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    inputText.value = e.target.result;
+                    updateCounts();
+                };
+                reader.readAsText(file);
+            } else if (ext === 'docx') {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    mammoth.extractRawText({ arrayBuffer: e.target.result })
+                        .then((result) => {
+                            inputText.value = result.value;
+                            updateCounts();
+                        })
+                        .catch(err => alert("Gagal membaca file .docx: " + err));
+                };
+                reader.readAsArrayBuffer(file);
+            } else if (ext === 'pdf') {
+                const reader = new FileReader();
+                reader.onload = function() {
+                    const typedarray = new Uint8Array(this.result);
+                    pdfjsLib.getDocument(typedarray).promise.then(pdf => {
+                        let countPromises = [];
+                        for (let i = 1; i <= pdf.numPages; i++) {
+                            countPromises.push(
+                                pdf.getPage(i).then(page => {
+                                    return page.getTextContent().then(text => {
+                                        return text.items.map(s => s.str).join(" ");
+                                    });
+                                })
+                            );
+                        }
+                        Promise.all(countPromises).then(pagesText => {
+                            inputText.value = pagesText.join("\n\n");
+                            updateCounts();
+                        });
+                    });
+                };
+                reader.readAsArrayBuffer(file);
+            } else {
+                alert("Format file tidak didukung. Harap upload .txt, .docx, atau .pdf");
+            }
+        }
+
+        // Clear
+        btnClear.addEventListener('click', () => {
+            inputText.value = '';
+            fixedText.textContent = 'Hasil penulisan ulang yang lebih alami akan muncul di sini setelah Anda mengklik tombol Humanize.';
+            highlightedText.textContent = 'Pratinjau peta analisa kalimat akan ditampilkan di sini.';
+            updateCounts();
+            resetScoreDisplay();
+        });
+
+        function resetScoreDisplay() {
+            scoreCircle.setAttribute('stroke-dasharray', `0, 100`);
+            scorePercentage.textContent = '0%';
+            aiPercentage.textContent = '0%';
+            humanPercentage.textContent = '0%';
+            scoreLabel.textContent = 'Belum Scanned';
+            statusBadge.textContent = 'Masukkan teks & klik Analisis';
+            statusBadge.className = 'mt-4 px-4 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-slate-400 text-xs font-semibold text-center';
+            burstinessScore.textContent = '-';
+            aiDensityScore.textContent = '-';
+            fixPanel.classList.add('hidden');
+        }
+
+        // Backend-powered analysis. AI probabilities are shown only when a trained model is loaded.
+        btnAnalyze.addEventListener('click', analyzeText);
+
+        async function analyzeText() {
+            const text = inputText.value.trim();
+            if (!text) { alert("Masukkan teks terlebih dahulu!"); return; }
+            btnAnalyze.disabled = true;
+            const oldLabel = btnAnalyze.innerHTML;
+            btnAnalyze.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menganalisis...';
+            try {
+                const response = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text, include_similarity: true, top_k: 5 })
+                });
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.detail || 'Backend gagal memproses teks.');
+                renderAnalysis(data);
+            } catch (err) {
+                alert('Gagal menghubungi backend: ' + err.message + '\nPastikan server FastAPI berjalan dan halaman dibuka melalui http://127.0.0.1:8000/.');
+            } finally {
+                btnAnalyze.disabled = false;
+                btnAnalyze.innerHTML = oldLabel;
+            }
+        }
+
+        function renderAnalysis(data) {
+            const ai = data.ai_detection || {};
+            const linguistics = data.linguistic_analysis || {};
+            const sentences = data.sentence_analysis || [];
+            const aiAvailable = ai.available === true && Number.isFinite(ai.ai_probability);
+
+            if (aiAvailable) {
+                const score = Math.round(ai.ai_probability);
+                const human = Math.round(ai.human_probability ?? (100 - score));
+                scoreCircle.setAttribute('stroke-dasharray', `${score}, 100`);
+                scorePercentage.textContent = `${score}%`;
+                aiPercentage.textContent = `${score}%`;
+                humanPercentage.textContent = `${human}%`;
+                scoreLabel.textContent = ai.label === 'ai_likely' ? 'Indikasi AI lebih tinggi' : 'Indikasi manusia lebih tinggi';
+                statusBadge.textContent = `Estimasi model: ${score}% indikasi AI`;
+                statusBadge.className = 'mt-4 px-4 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-semibold text-center';
+                fixPanel.classList.add('hidden');
+            } else {
+                scoreCircle.setAttribute('stroke-dasharray', '0, 100');
+                scorePercentage.textContent = 'N/A';
+                aiPercentage.textContent = 'N/A';
+                humanPercentage.textContent = 'N/A';
+                scoreLabel.textContent = 'Model belum tersedia';
+                statusBadge.textContent = 'Analisis linguistik aktif — classifier AI belum dipasang';
+                statusBadge.className = 'mt-4 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-semibold text-center';
+                fixPanel.classList.remove('hidden');
+                fixPanel.className = 'glass-panel rounded-2xl p-6 border-l-4 border-l-amber-500 bg-amber-950/10 shadow-2xl';
+                recommendationTitle.textContent = 'Classifier AI belum dikonfigurasi';
+                recommendationDesc.textContent = ai.message || 'Statistik bahasa tidak dapat dipakai sebagai persentase deteksi AI. Latih dan pasang model terlebih dahulu.';
+            }
+
+            burstinessScore.textContent = `${linguistics.sentence_length_stddev ?? '-'} (simpangan baku panjang kalimat)`;
+            aiDensityScore.textContent = `${linguistics.connector_count ?? 0} konektor teridentifikasi`;
+            currentDetectedPhrases = linguistics.connectors_found || [];
+            detectedPhrasesList.innerHTML = currentDetectedPhrases.length
+                ? currentDetectedPhrases.map(p => `<li>${escapeHtml(p)}</li>`).join('')
+                : '<li>Tidak ada konektor dari daftar analisis yang ditemukan.</li>';
+
+            highlightedText.innerHTML = sentences.map(item => {
+                let colorClass = 'text-slate-300 bg-slate-800/50';
+                let suffix = '';
+                if (Number.isFinite(item.ai_probability)) {
+                    const pct = Math.round(item.ai_probability);
+                    colorClass = pct >= 70 ? 'text-rose-300 bg-rose-950/40 border-b border-rose-500/40' :
+                        pct >= 45 ? 'text-amber-300 bg-amber-950/30' : 'text-emerald-300 bg-emerald-950/30';
+                    suffix = ` <small class="opacity-70">(${pct}% estimasi model)</small>`;
+                }
+                return `<span class="${colorClass} px-1 py-0.5 rounded inline-block my-0.5">${escapeHtml(item.text)}${suffix}</span>`;
+            }).join(' ');
+
+            renderSimilarity(data.similarity || {});
+            window.lastAnalysis = data;
+        }
+
+        function renderSimilarity(similarity) {
+            let panel = document.getElementById('similarity-results');
+            if (!panel) {
+                panel = document.createElement('div');
+                panel.id = 'similarity-results';
+                panel.className = 'glass-panel rounded-2xl p-6 shadow-2xl';
+                document.querySelector('.lg\\:col-span-5').appendChild(panel);
+            }
+            const matches = similarity.matches || [];
+            panel.innerHTML = `<h3 class="text-sm font-semibold text-slate-300 mb-3"><i class="fa-solid fa-copy text-cyan-400 mr-2"></i>Similarity Detection</h3>` +
+                `<p class="text-xs text-slate-400 mb-3">Corpus pembanding: ${similarity.corpus_documents || 0} dokumen. ${escapeHtml(similarity.scope_notice || '')}</p>` +
+                (matches.length ? `<div class="space-y-2">${matches.map(m => `<div class="bg-slate-950/60 border border-slate-800 rounded-lg p-3"><div class="flex justify-between gap-2 text-xs"><span class="text-slate-300 break-all">${escapeHtml(m.source_id)}</span><strong class="text-cyan-300">${m.similarity_percent}%</strong></div><div class="text-[10px] text-slate-500 mt-1">${escapeHtml(m.method)}</div></div>`).join('')}</div>` : '<p class="text-xs text-slate-500">Belum ada kecocokan. Tambahkan dokumen referensi .txt ke folder corpus di server.</p>') +
+                '<p class="text-[10px] text-slate-500 mt-3">Persentase kemiripan bukan keputusan plagiarisme dan hanya berlaku pada corpus yang tersedia.</p>';
+        }
+
+        function escapeHtml(value) {
+            return String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+        }
+
+        // Humanize / Text Fixer Handler
+        btnFix.addEventListener('click', () => humanizeText());
+        btnAutoFixTarget.addEventListener('click', () => humanizeText());
+
+        function humanizeText() {
+            let text = inputText.value.trim();
+            if (!text) {
+                alert("Masukkan teks terlebih dahulu!");
+                return;
+            }
+
+            const replacements = [
+                { pattern: /dalam konteks ini/gi, replace: "mengenai hal tersebut" },
+                { pattern: /secara keseluruhan/gi, replace: "ringkasnya" },
+                { pattern: /penting untuk dicatat bahwa/gi, replace: "perlu diperhatikan bahwa" },
+                { pattern: /merupakan aspek kunci/gi, replace: "menjadi salah satu elemen utama" },
+                { pattern: /dapat disimpulkan bahwa/gi, replace: "dengan demikian" },
+                { pattern: /di sisi lain/gi, replace: "namun demikian" },
+                { pattern: /memainkan peran penting/gi, replace: "berkontribusi signifikan" },
+                { pattern: /tidak dapat dipungkiri/gi, replace: "jelas terlihat bahwa" },
+                { pattern: /dalam era modern ini/gi, replace: "saat ini" },
+                { pattern: /seiring berjalannya waktu/gi, replace: "kemudian" },
+                { pattern: /sebagai kesimpulan/gi, replace: "akhirnya" },
+                { pattern: /hal ini menunjukkan/gi, replace: "dari temuan tersebut terlihat" },
+                { pattern: /oleh karena itu/gi, replace: "maka dari itu" }
+            ];
+
+            replacements.forEach(r => {
+                text = text.replace(r.pattern, r.replace);
+            });
+
+            let sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
+            let humanized = sentences.map((s, idx) => {
+                let trimmed = s.trim();
+                if (idx % 2 === 0 && trimmed.length > 70) {
+                    trimmed = trimmed.replace(/, dan /g, ". Terlebih lagi, ");
+                }
+                return trimmed;
+            }).join(" ");
+
+            fixedText.textContent = humanized;
+            alert("Teks telah disunting dengan penggantian frasa sederhana. Periksa kembali makna, fakta, dan sitasi sebelum digunakan.");
+        }
+
+        // Copy and Download
+        btnCopy.addEventListener('click', () => {
+            const content = fixedText.textContent;
+            navigator.clipboard.writeText(content).then(() => {
+                alert("Teks berhasil disalin ke clipboard!");
+            });
+        });
+
+        btnDownload.addEventListener('click', () => {
+            const blob = new Blob([fixedText.textContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'fixed-academic-text.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+    </script>
+</body>
+</html>
